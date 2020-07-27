@@ -125,6 +125,8 @@ module Rack::Cache
     def invalidate(request, entity_store)
       modified = false
       key = cache_key(request)
+      return if key.nil?
+
       entries =
         read(key).map do |req, res|
           response = restore_response(res)

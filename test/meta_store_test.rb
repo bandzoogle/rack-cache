@@ -232,6 +232,11 @@ module RackCacheMetaStoreImplementation
         @store.lookup(@request, @entity_store).must_be_nil
       end
 
+      it 'succeeds when #invalidate called for nil cache_key' do
+        req = mock_request('/test', {'rack-cache.cache_key' => proc {} })
+        @store.invalidate(req, @entity_store)
+      end
+
       it 'gracefully degrades if the cache store stops working' do
         @store = Class.new(Rack::Cache::MetaStore) do
           def purge(*args); nil end
