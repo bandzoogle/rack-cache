@@ -162,6 +162,11 @@ module RackCacheMetaStoreImplementation
         @store.lookup(req, @entity_store).must_be_nil
       end
 
+      it 'does not find an entry with #lookup when nil cache_key' do
+        req = mock_request('/test', {'rack-cache.cache_key' => proc {} })
+        @store.lookup(req, @entity_store).must_be_nil
+      end
+
       it "canonizes urls for cache keys" do
         store_simple_entry(path='/test?x=y&p=q')
 
@@ -295,6 +300,12 @@ module RackCacheMetaStoreImplementation
         slurp(@store.lookup(req1, @entity_store).body).must_equal 'test 3'
 
         @store.read(key).length.must_equal 2
+      end
+
+      it 'does not store if key is nil' do
+        req = mock_request('/test', {'rack-cache.cache_key' => proc {} })
+        res = mock_response(200, {'Vary' => 'Foo Bar'}, ['test 1'])
+        @store.lookup(req, @entity_store).must_be_nil
       end
 
       # TTL ====================================================================

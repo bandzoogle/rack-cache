@@ -27,6 +27,10 @@ module Rack::Cache
     # was found.
     def lookup(request, entity_store)
       key = cache_key(request)
+
+      # bail out if we don't have a key to lookup
+      return nil if key.nil?
+
       entries = read(key)
 
       # bail out if we have nothing cached
@@ -60,6 +64,10 @@ module Rack::Cache
     # This method calls #write with the new list of cache entries.
     def store(request, response, entity_store)
       key = cache_key(request)
+
+      # bail out if we don't have a key to use
+      return nil if key.nil?
+
       stored_env = persist_request(request)
 
       # write the response body to the entity store if this is the
